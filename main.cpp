@@ -1,5 +1,7 @@
 #include<iostream>
 #include<string>
+#include<cstdlib>
+#include<time.h>
 using namespace std;
 
 void displayBoard(char board[3][3]) {
@@ -105,13 +107,30 @@ void takingInput(char board[3][3], char player) {
 	board[row][col] = player;
 }
 
-// to change player after each turn
+// to change player after each turn(For Multi Player)
 char turn(char& player1, char& player2) {
 	char temp = player1;
 	player1 = player2;
 	player2 = temp;
 
 	return temp;
+}
+
+void dumbComputer(char board[3][3], char computerPlayer) {
+	cout << "Player " << computerPlayer << "'s (Computer's) Turn!" << endl;
+
+	srand(time(0));
+	int row = 0, col = 0;
+
+	row = rand() % 3;
+	col = rand() % 3;
+
+	while (board[row][col] != ' ') {
+		row = rand() % 3;
+		col = rand() % 3;
+	}
+
+	board[row][col] = computerPlayer;
 }
 
 int main() {
@@ -124,14 +143,62 @@ int main() {
 		}
 	}
 
-	while (1) {
+	int choice = 0;
+	cout << "Please Enter Your Choice" << endl;
+	cout << "1. Multi Player\n2. Play with Dumb Computer(Daniyal)\n3. Play with Super Computer" << endl;
+	cin >> choice;
+
+	switch (choice)
+	{
+	case 1:
+
+		while (1) {
+			displayBoard(board);
+			terminalCases(board, checkWin);
+
+			if (checkWin)
+				exit(0);
+
+			takingInput(board, turn(player1, player2));
+		}
+		break;
+
+	case 2:
+
+		int choice;
+		cout << "Choose Your Player:\n1. X\n2. O" << endl;
+		cin >> choice;
+
+		if (choice == 1) {
+			player1 = 'X';
+			player2 = '0';
+		}
+		else {
+			player1 = 'O';
+			player2 = 'X';
+		}
+
+		while (1) {
+			displayBoard(board);
+			terminalCases(board, checkWin);
+
+			if (checkWin)
+				exit(0);
+
+			takingInput(board, player1);
+
+			displayBoard(board);
+			terminalCases(board, checkWin);
+
+			if (checkWin)
+				exit(0);
+
+			dumbComputer(board, player2);
+		}
+		break;
 		
-		displayBoard(board);
-		terminalCases(board, checkWin);
-
-		if (checkWin)
-			exit(0);
-
-		takingInput(board, turn(player1, player2));
+	default:
+		cout << "INVALID CHOICE" << endl;
+		break;
 	}
 }
